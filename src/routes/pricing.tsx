@@ -109,7 +109,6 @@ function PricingPage() {
                       <td className="px-4 py-4 text-right">
                         <Link
                           to="/book"
-                          search={{ size: s, type: "drinking" } as never}
                           className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline"
                         >
                           Book <ArrowRight className="h-3 w-3" />
@@ -169,7 +168,6 @@ function PricingPage() {
                       <td className="px-4 py-4 text-right">
                         <Link
                           to="/book"
-                          search={{ size: s, type: "non-drinking" } as never}
                           className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline"
                         >
                           Book <ArrowRight className="h-3 w-3" />
