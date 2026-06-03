@@ -43,10 +43,10 @@ const TRUST = [
 ];
 
 const SIZES = [
-  { size: "1000 L", use: "Small home / office", priceFrom: 59 },
-  { size: "3000 L", use: "Mid-size families", priceFrom: 129 },
-  { size: "5000 L", use: "Apartments & shops", priceFrom: 200 },
-  { size: "10000 L", use: "Construction sites", priceFrom: 349 },
+  { size: "1000 L", use: "Small home / office", priceFrom: 79 },
+  { size: "3000 L", use: "Mid-size families", priceFrom: 169 },
+  { size: "5000 L", use: "Apartments & shops", priceFrom: 259 },
+  { size: "10000 L", use: "Construction sites", priceFrom: 449 },
 ];
 
 const STEPS = [
@@ -88,7 +88,7 @@ function Home() {
 
             <p className="reveal reveal-delay-2 mt-6 max-w-xl text-base text-white/80 sm:text-lg">
               Fast, reliable and affordable water tanker delivery for homes, businesses and
-              construction sites. Starting at just <span className="font-semibold text-white">₹59</span>.
+              construction sites. Starting at just <span className="font-semibold text-white">₹79</span>.
             </p>
 
             <div className="reveal reveal-delay-3 mt-8 flex flex-wrap gap-3">
