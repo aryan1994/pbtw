@@ -88,7 +88,16 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          <Link
+            to="/auth"
+            className={cn(
+              "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+              scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
+            )}
+          >
+            Login
+          </Link>
           <Link
             to="/book"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:bg-navy-deep hover:scale-[1.03] hover:shadow-elegant"
