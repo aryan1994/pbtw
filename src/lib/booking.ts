@@ -1,25 +1,45 @@
-// Order ID + WhatsApp helpers
+// Order ID + WhatsApp helpers + canonical pricing
 export const COMPANY = {
   name: "PAPPU BHAI TANKER WALE",
   short: "PBTW",
   phone: "9214775938",
   whatsapp: "919214775938",
-  email: "hydroxflow@gmail.com",
-  instagram: "@hydroxflow",
+  email: "pbtwgroup@gmail.com",
+  instagram: "@pbtwgroup",
   address: "Gaddi Thoriyan Housing Board, Beawar, Rajasthan - 305901",
   origin: "Prabhu Ki Bagiya, Beawar, Rajasthan",
 };
 
-export type WaterType = "drinking" | "non-drinking";
+export type WaterType = "drinking" | "non-drinking" | "construction";
 export type TankerSize = 1000 | 3000 | 5000 | 10000;
 
+// Official PBTW pricing (₹) — base price by water type + size
 export const PRICING: Record<WaterType, Record<TankerSize, number>> = {
-  drinking: { 1000: 59, 3000: 129, 5000: 200, 10000: 349 },
-  "non-drinking": { 1000: 149, 3000: 249, 5000: 399, 10000: 649 },
+  drinking:      { 1000: 399, 3000: 899, 5000: 1399, 10000: 2499 },
+  "non-drinking": { 1000: 99,  3000: 199, 5000: 299,  10000: 499 },
+  construction:  { 1000: 79,  3000: 169, 5000: 259,  10000: 449 },
 };
 
+export const WATER_TYPE_LABEL: Record<WaterType, string> = {
+  drinking: "Drinking Water",
+  "non-drinking": "Non-Drinking Water",
+  construction: "Construction Water",
+};
+
+// Per-km delivery charge in ₹
+export const DELIVERY_RATE_PER_KM = 59;
+// Wallet payment discount %
+export const WALLET_DISCOUNT_PCT = 15;
+
+export function calcDeliveryCharge(km: number): number {
+  return Math.max(0, Math.round(km * DELIVERY_RATE_PER_KM));
+}
+
+export function calcWalletDiscount(subtotal: number): number {
+  return Math.round((subtotal * WALLET_DISCOUNT_PCT) / 100);
+}
+
 export function generateOrderId(): string {
-  // e.g. #2061GWHQK071
   const digits = () => Math.floor(1000 + Math.random() * 9000).toString();
   const letters = () => {
     const a = "ABCDEFGHJKMNPQRSTUVWXYZ";
@@ -40,7 +60,7 @@ export interface BookingPayload {
   waterType: WaterType;
   date: string;
   slot: string;
-  payment: "cod" | "online";
+  payment: "cod" | "online" | "wallet";
   amount: number;
   location?: { lat: number; lng: number };
 }
@@ -49,6 +69,8 @@ export function buildWhatsAppLink(b: BookingPayload): string {
   const mapsLink = b.location
     ? `https://www.google.com/maps?q=${b.location.lat},${b.location.lng}`
     : "";
+  const paymentLabel =
+    b.payment === "cod" ? "Cash on Delivery" : b.payment === "wallet" ? "Wallet" : "Online";
   const lines = [
     `I Need Your Service`,
     ``,
@@ -58,12 +80,12 @@ export function buildWhatsAppLink(b: BookingPayload): string {
     `*Address:* ${b.address}${b.landmark ? ` (${b.landmark})` : ""}`,
     mapsLink ? `*Location:* ${mapsLink}` : ``,
     ``,
-    `*Tanker:* ${b.size.toLocaleString()} L (${b.waterType === "drinking" ? "Drinking" : "Non-Drinking / Construction"})`,
+    `*Tanker:* ${b.size.toLocaleString()} L (${WATER_TYPE_LABEL[b.waterType]})`,
     `*Delivery:* ${b.date} • ${b.slot}`,
-    `*Payment:* ${b.payment === "cod" ? "Cash on Delivery" : "Online"}`,
+    `*Payment:* ${paymentLabel}`,
     `*Amount:* ₹${b.amount}`,
     ``,
-    `— Booked via pappubhaitankerwale.com`,
+    `— Booked via pbtw.lovable.app`,
   ].filter(Boolean);
   const text = encodeURIComponent(lines.join("\n"));
   return `https://wa.me/${COMPANY.whatsapp}?text=${text}`;

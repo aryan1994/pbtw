@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Droplets } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logoAsset from "@/assets/pbtw-logo.png.asset.json";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -32,14 +33,14 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2 group" onClick={() => setOpen(false)}>
+        <Link to="/" className="flex items-center gap-2.5 group" onClick={() => setOpen(false)}>
           <span
             className={cn(
-              "flex h-10 w-10 items-center justify-center rounded-xl transition-all",
-              scrolled ? "bg-primary text-primary-foreground" : "bg-white/15 text-white backdrop-blur"
+              "flex h-11 w-11 items-center justify-center rounded-xl transition-all overflow-hidden",
+              scrolled ? "bg-white ring-1 ring-border" : "bg-white/95 backdrop-blur"
             )}
           >
-            <Droplets className="h-5 w-5" />
+            <img src={logoAsset.url} alt="PBTW Group logo" className="h-9 w-9 object-contain" />
           </span>
           <span className="flex flex-col leading-tight">
             <span
@@ -48,15 +49,15 @@ export function Header() {
                 scrolled ? "text-foreground" : "text-white"
               )}
             >
-              PAPPU BHAI
+              PBTW Group
             </span>
             <span
               className={cn(
-                "text-[10px] font-semibold uppercase tracking-[0.2em]",
+                "text-[10px] font-semibold uppercase tracking-[0.18em]",
                 scrolled ? "text-muted-foreground" : "text-white/75"
               )}
             >
-              Tanker Wale
+              Pappu Bhai Tanker Wale
             </span>
           </span>
         </Link>
@@ -76,7 +77,7 @@ export function Header() {
                 className: cn(
                   "rounded-full px-4 py-2 text-sm font-semibold",
                   scrolled
-                    ? "bg-secondary text-foreground"
+                    ? "bg-secondary text-primary"
                     : "bg-white/15 text-white"
                 ),
               }}
@@ -87,10 +88,19 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          <Link
+            to="/auth"
+            className={cn(
+              "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+              scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
+            )}
+          >
+            Login
+          </Link>
           <Link
             to="/book"
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-card transition-transform hover:scale-[1.03] hover:shadow-elegant"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:bg-navy-deep hover:scale-[1.03] hover:shadow-elegant"
           >
             Book Now
           </Link>
@@ -126,7 +136,7 @@ export function Header() {
             <Link
               to="/book"
               onClick={() => setOpen(false)}
-              className="mt-2 block rounded-lg bg-accent px-4 py-3 text-center text-base font-semibold text-accent-foreground"
+              className="mt-2 block rounded-lg bg-primary px-4 py-3 text-center text-base font-semibold text-primary-foreground"
             >
               Book Now
             </Link>
