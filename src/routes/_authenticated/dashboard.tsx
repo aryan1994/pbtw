@@ -282,7 +282,7 @@ function OrdersTab({ orders, onTrack }: { orders: OrderRow[]; onTrack: (id: stri
             <p className="font-display text-2xl font-extrabold text-primary">₹{o.total}</p>
           </div>
           <div className="mt-4 grid gap-3 text-sm sm:grid-cols-4">
-            <Meta label="Water" value={`${WATER_TYPE_LABEL[o.water_type] ?? o.water_type}`} />
+            <Meta label="Water" value={WATER_TYPE_LABEL[o.water_type as keyof typeof WATER_TYPE_LABEL] ?? o.water_type} />
             <Meta label="Tanker" value={`${o.size_l.toLocaleString()} L`} />
             <Meta label="Distance" value={`${Number(o.distance_km).toFixed(1)} km`} />
             <Meta label="Delivery" value={`${o.delivery_date} · ${o.delivery_slot.split(" · ")[0]}`} />
