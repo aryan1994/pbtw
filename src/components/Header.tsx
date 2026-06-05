@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/pbtw-logo.png.asset.json";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -12,16 +13,24 @@ const NAV = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
 
   return (
     <header
@@ -89,15 +98,27 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Link
-            to="/auth"
-            className={cn(
-              "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-              scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
-            )}
-          >
-            Login
-          </Link>
+          {authed ? (
+            <Link
+              to="/dashboard"
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
+              )}
+            >
+              <LayoutDashboard className="h-4 w-4" /> Dashboard
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className={cn(
+                "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
+              )}
+            >
+              Login
+            </Link>
+          )}
           <Link
             to="/book"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:bg-navy-deep hover:scale-[1.03] hover:shadow-elegant"
@@ -105,6 +126,7 @@ export function Header() {
             Book Now
           </Link>
         </div>
+
 
         <button
           onClick={() => setOpen((v) => !v)}
