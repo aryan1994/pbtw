@@ -176,7 +176,7 @@ function BookPage() {
       </section>
 
       <section className="pb-24">
-        <div className="mx-auto -mt-10 max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mt-10 max-w-5xl px-4 sm:px-6 lg:px-8">
           {confirmation ? (
             <Confirmation reset={resetForm} confirmation={confirmation} />
           ) : (
@@ -389,7 +389,7 @@ function BookPage() {
 
               {/* Summary */}
               <aside className="lg:col-span-1">
-                <div className="sticky top-24 space-y-5 rounded-2xl border border-border bg-secondary/40 p-5">
+                <div className="space-y-5 rounded-2xl border border-border bg-secondary/40 p-5">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
                     Order summary
                   </p>
