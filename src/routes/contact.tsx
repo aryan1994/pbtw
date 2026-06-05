@@ -70,7 +70,7 @@ function ContactPage() {
       </section>
 
       {/* Contact cards */}
-      <section className="-mt-14 pb-24">
+      <section className="mt-10 pb-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {CONTACTS.map((c) => (
