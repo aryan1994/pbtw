@@ -174,10 +174,24 @@ function ProfilePage() {
             </div>
           </article>
 
-          {/* Coming soon */}
-          <article className="lg:col-span-3 rounded-3xl border border-dashed border-border bg-card p-6 text-center text-sm text-muted-foreground">
-            Order history, live tracking, invoices and admin/driver portals are coming in the next phase.
+          {/* Quick links */}
+          <article className="lg:col-span-3 grid gap-3 sm:grid-cols-2">
+            <Link to="/dashboard" className="group flex items-center justify-between rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+              <div>
+                <p className="font-display text-base font-bold text-foreground">Customer Dashboard</p>
+                <p className="text-xs text-muted-foreground">Orders, live tracking, invoices, offers</p>
+              </div>
+              <ArrowRight className="h-5 w-5 text-primary transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link to="/driver" className="group flex items-center justify-between rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+              <div>
+                <p className="font-display text-base font-bold text-foreground">Driver Dashboard</p>
+                <p className="text-xs text-muted-foreground">Assigned orders, status, earnings</p>
+              </div>
+              <ArrowRight className="h-5 w-5 text-primary transition-transform group-hover:translate-x-1" />
+            </Link>
           </article>
+
         </div>
       </section>
     </div>
