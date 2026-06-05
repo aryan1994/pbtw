@@ -24,7 +24,6 @@ export const Route = createFileRoute("/_authenticated/driver")({
 });
 
 type DriverRow = {
-  id: string;
   user_id: string;
   name: string;
   phone: string;
@@ -33,6 +32,7 @@ type DriverRow = {
   total_deliveries: number;
   total_earnings: number;
 };
+
 
 type OrderRow = {
   id: string;
@@ -80,24 +80,25 @@ function DriverDashboard() {
       .select("*")
       .eq("user_id", u.id)
       .maybeSingle();
-    setDriver((d as DriverRow) ?? null);
+    setDriver(d ? (d as unknown as DriverRow) : null);
 
-    if (d?.id) {
+    if (d?.user_id) {
       const [{ data: ords }, { data: earns }] = await Promise.all([
         supabase
           .from("orders")
           .select(
             "id,order_code,customer_name,customer_phone,status,water_type,size_l,total,address_text,lat,lng,delivery_date,delivery_slot,created_at"
           )
-          .eq("driver_id", d.id)
+          .eq("driver_id", d.user_id)
           .order("created_at", { ascending: false }),
         supabase
           .from("driver_earnings")
           .select("amount,earned_on")
-          .eq("driver_id", d.id)
+          .eq("driver_id", d.user_id)
           .order("earned_on", { ascending: false })
           .limit(60),
       ]);
+
       setOrders((ords ?? []) as OrderRow[]);
       setEarnings((earns ?? []) as EarningRow[]);
     }
@@ -109,12 +110,12 @@ function DriverDashboard() {
   }, []);
 
   useEffect(() => {
-    if (!driver?.id) return;
+    if (!driver?.user_id) return;
     const channel = supabase
-      .channel(`driver-${driver.id}`)
+      .channel(`driver-${driver.user_id}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "orders", filter: `driver_id=eq.${driver.id}` },
+        { event: "*", schema: "public", table: "orders", filter: `driver_id=eq.${driver.user_id}` },
         () => load()
       )
       .subscribe();
@@ -122,7 +123,8 @@ function DriverDashboard() {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [driver?.id]);
+  }, [driver?.user_id]);
+
 
   const advance = async (order: OrderRow) => {
     const next = NEXT_STATUS[order.status];
@@ -143,7 +145,7 @@ function DriverDashboard() {
         // Record earning + bump counters
         const earnAmount = Math.round(Number(order.total) * 0.6);
         await supabase.from("driver_earnings").insert({
-          driver_id: driver.id,
+          driver_id: driver.user_id,
           order_id: order.id,
           amount: earnAmount,
           earned_on: new Date().toISOString().slice(0, 10),
@@ -154,7 +156,8 @@ function DriverDashboard() {
             total_deliveries: driver.total_deliveries + 1,
             total_earnings: Number(driver.total_earnings) + earnAmount,
           })
-          .eq("id", driver.id);
+          .eq("user_id", driver.user_id);
+
         // Auto-generate invoice record
         const invoiceNo = `INV-${Date.now().toString().slice(-8)}`;
         await supabase.from("invoices").insert({
@@ -178,7 +181,8 @@ function DriverDashboard() {
     const { error } = await supabase
       .from("drivers")
       .update({ status })
-      .eq("id", driver.id);
+      .eq("user_id", driver.user_id);
+
     if (error) {
       toast.error("Could not update availability");
       return;
@@ -410,7 +414,7 @@ function DriverOrderCard({
             </span>
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            {WATER_TYPE_LABEL[order.water_type] ?? order.water_type} ·{" "}
+            {WATER_TYPE_LABEL[order.water_type as keyof typeof WATER_TYPE_LABEL] ?? order.water_type} ·{" "}
             {order.size_l.toLocaleString()} L · {order.delivery_date} ·{" "}
             {order.delivery_slot.split(" · ")[0]}
           </p>
