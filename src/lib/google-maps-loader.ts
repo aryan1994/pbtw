@@ -1,4 +1,6 @@
+/// <reference types="google.maps" />
 // Singleton Google Maps JavaScript API loader.
+
 // Loads the script once (async + callback) and resolves when google.maps is ready.
 
 const BROWSER_KEY = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string;
