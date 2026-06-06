@@ -97,7 +97,7 @@ function AdminDriversPage() {
     app: Application,
     status: Application["status"],
     note?: string
-  ) {
+  ): Promise<void> {
     const { error } = await supabase
       .from("driver_applications")
       .update({
@@ -106,7 +106,7 @@ function AdminDriversPage() {
         reviewed_at: new Date().toISOString(),
       })
       .eq("id", app.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
 
     // If approved → ensure driver row + grant driver role
     if (status === "approved") {
