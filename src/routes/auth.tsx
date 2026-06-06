@@ -215,6 +215,29 @@ function AuthPage() {
               />
             </Field>
 
+            {mode === "signup" && (
+              <label className="flex items-start gap-2 rounded-xl border border-border bg-secondary/40 p-3 text-xs text-foreground">
+                <input
+                  type="checkbox"
+                  checked={terms}
+                  onChange={(e) => setTerms(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded"
+                />
+                <span>
+                  I have read and agree to the{" "}
+                  <Link to="/" className="font-semibold text-primary underline">
+                    Terms &amp; Conditions
+                  </Link>{" "}
+                  and{" "}
+                  <Link to="/" className="font-semibold text-primary underline">
+                    Privacy Policy
+                  </Link>
+                  .
+                </span>
+              </label>
+            )}
+
+
             <button
               type="submit"
               disabled={busy}
