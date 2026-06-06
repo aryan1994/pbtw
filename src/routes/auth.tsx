@@ -27,6 +27,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [terms, setTerms] = useState(false);
   const [busy, setBusy] = useState(false);
 
   // Redirect once auth state populates
@@ -47,6 +48,7 @@ function AuthPage() {
     if (!email || !password) return toast.error("Enter email and password");
     if (mode === "signup" && password.length < 6) return toast.error("Password must be at least 6 characters");
     if (mode === "signup" && !name.trim()) return toast.error("Enter your full name");
+    if (mode === "signup" && !terms) return toast.error("You must accept the Terms & Privacy Policy");
 
     setBusy(true);
     try {
@@ -60,6 +62,11 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        // Record T&C acceptance (best-effort)
+        const { data: u } = await supabase.auth.getUser();
+        if (u.user) {
+          await supabase.from("customer_terms_acceptances").insert({ user_id: u.user.id, version: "v1" });
+        }
         toast.success("Account created! You're signed in.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
