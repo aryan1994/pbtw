@@ -83,6 +83,99 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_terms_acceptances: {
+        Row: {
+          accepted_at: string
+          id: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          accepted_at?: string
+          id?: string
+          user_id: string
+          version?: string
+        }
+        Update: {
+          accepted_at?: string
+          id?: string
+          user_id?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      driver_applications: {
+        Row: {
+          aadhaar_number: string
+          aadhaar_url: string
+          address: string
+          created_at: string
+          dl_url: string
+          email: string
+          full_name: string
+          id: string
+          mobile: string
+          pan_number: string
+          pan_url: string
+          rc_url: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          terms_accepted_at: string
+          updated_at: string
+          user_id: string
+          vehicle_number: string
+          vehicle_type: Database["public"]["Enums"]["vehicle_type"]
+        }
+        Insert: {
+          aadhaar_number: string
+          aadhaar_url: string
+          address: string
+          created_at?: string
+          dl_url: string
+          email: string
+          full_name: string
+          id?: string
+          mobile: string
+          pan_number: string
+          pan_url: string
+          rc_url: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          terms_accepted_at: string
+          updated_at?: string
+          user_id: string
+          vehicle_number: string
+          vehicle_type: Database["public"]["Enums"]["vehicle_type"]
+        }
+        Update: {
+          aadhaar_number?: string
+          aadhaar_url?: string
+          address?: string
+          created_at?: string
+          dl_url?: string
+          email?: string
+          full_name?: string
+          id?: string
+          mobile?: string
+          pan_number?: string
+          pan_url?: string
+          rc_url?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          terms_accepted_at?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_number?: string
+          vehicle_type?: Database["public"]["Enums"]["vehicle_type"]
+        }
+        Relationships: []
+      }
       driver_earnings: {
         Row: {
           amount: number
@@ -544,6 +637,7 @@ export type Database = {
     }
     Enums: {
       app_role: "customer" | "driver" | "admin"
+      application_status: "pending" | "approved" | "rejected" | "suspended"
       driver_status: "available" | "busy" | "offline"
       order_status:
         | "pending"
@@ -554,6 +648,7 @@ export type Database = {
         | "delivered"
         | "cancelled"
       payment_method: "cod" | "online" | "wallet"
+      vehicle_type: "water_tanker" | "mini_tanker" | "large_tanker" | "other"
       wallet_txn_status: "pending" | "approved" | "rejected"
       wallet_txn_type: "deposit" | "debit" | "refund" | "bonus" | "referral"
       water_type: "drinking" | "non-drinking" | "construction"
@@ -685,6 +780,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["customer", "driver", "admin"],
+      application_status: ["pending", "approved", "rejected", "suspended"],
       driver_status: ["available", "busy", "offline"],
       order_status: [
         "pending",
@@ -696,6 +792,7 @@ export const Constants = {
         "cancelled",
       ],
       payment_method: ["cod", "online", "wallet"],
+      vehicle_type: ["water_tanker", "mini_tanker", "large_tanker", "other"],
       wallet_txn_status: ["pending", "approved", "rejected"],
       wallet_txn_type: ["deposit", "debit", "refund", "bonus", "referral"],
       water_type: ["drinking", "non-drinking", "construction"],
