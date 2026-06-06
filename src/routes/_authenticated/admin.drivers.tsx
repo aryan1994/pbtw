@@ -118,9 +118,9 @@ function AdminDriversPage() {
           user_id: app.user_id,
           name: app.full_name,
           phone: app.mobile,
-          vehicle_number: app.vehicle_number,
-          vehicle_type: app.vehicle_type,
+          vehicle_no: app.vehicle_number,
           status: "active",
+          verified: true,
         } as never,
         { onConflict: "user_id" }
       );
