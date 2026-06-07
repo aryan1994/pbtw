@@ -22,6 +22,8 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedDriverRouteImport } from './routes/_authenticated/driver'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedWalletRechargeRouteImport } from './routes/_authenticated/wallet.recharge'
+import { Route as AuthenticatedAdminRechargesRouteImport } from './routes/_authenticated/admin.recharges'
 import { Route as AuthenticatedAdminDriversRouteImport } from './routes/_authenticated/admin.drivers'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -88,6 +90,18 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWalletRechargeRoute =
+  AuthenticatedWalletRechargeRouteImport.update({
+    id: '/wallet/recharge',
+    path: '/wallet/recharge',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminRechargesRoute =
+  AuthenticatedAdminRechargesRouteImport.update({
+    id: '/admin/recharges',
+    path: '/admin/recharges',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminDriversRoute =
   AuthenticatedAdminDriversRouteImport.update({
     id: '/admin/drivers',
@@ -109,6 +123,8 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/api/chat': typeof ApiChatRoute
   '/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/admin/recharges': typeof AuthenticatedAdminRechargesRoute
+  '/wallet/recharge': typeof AuthenticatedWalletRechargeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,6 +140,8 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/api/chat': typeof ApiChatRoute
   '/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/admin/recharges': typeof AuthenticatedAdminRechargesRoute
+  '/wallet/recharge': typeof AuthenticatedWalletRechargeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,6 +159,8 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/_authenticated/admin/recharges': typeof AuthenticatedAdminRechargesRoute
+  '/_authenticated/wallet/recharge': typeof AuthenticatedWalletRechargeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,6 +178,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/api/chat'
     | '/admin/drivers'
+    | '/admin/recharges'
+    | '/wallet/recharge'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -173,6 +195,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/api/chat'
     | '/admin/drivers'
+    | '/admin/recharges'
+    | '/wallet/recharge'
   id:
     | '__root__'
     | '/'
@@ -189,6 +213,8 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/api/chat'
     | '/_authenticated/admin/drivers'
+    | '/_authenticated/admin/recharges'
+    | '/_authenticated/wallet/recharge'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -297,6 +323,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/wallet/recharge': {
+      id: '/_authenticated/wallet/recharge'
+      path: '/wallet/recharge'
+      fullPath: '/wallet/recharge'
+      preLoaderRoute: typeof AuthenticatedWalletRechargeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/recharges': {
+      id: '/_authenticated/admin/recharges'
+      path: '/admin/recharges'
+      fullPath: '/admin/recharges'
+      preLoaderRoute: typeof AuthenticatedAdminRechargesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/drivers': {
       id: '/_authenticated/admin/drivers'
       path: '/admin/drivers'
@@ -312,6 +352,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDriverRoute: typeof AuthenticatedDriverRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedAdminDriversRoute: typeof AuthenticatedAdminDriversRoute
+  AuthenticatedAdminRechargesRoute: typeof AuthenticatedAdminRechargesRoute
+  AuthenticatedWalletRechargeRoute: typeof AuthenticatedWalletRechargeRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -319,6 +361,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDriverRoute: AuthenticatedDriverRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedAdminDriversRoute: AuthenticatedAdminDriversRoute,
+  AuthenticatedAdminRechargesRoute: AuthenticatedAdminRechargesRoute,
+  AuthenticatedWalletRechargeRoute: AuthenticatedWalletRechargeRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
