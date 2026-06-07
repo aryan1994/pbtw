@@ -68,6 +68,7 @@ type Tab = "orders" | "track" | "invoices" | "offers";
 function DashboardPage() {
   const [tab, setTab] = useState<Tab>("orders");
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [walletBalance, setWalletBalance] = useState(0);
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -76,49 +77,57 @@ function DashboardPage() {
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
   const load = async () => {
+    setLoadError(null);
     setLoading(true);
-    const { data: userRes } = await supabase.auth.getUser();
-    const u = userRes.user;
-    if (!u) return;
-    setUserId(u.id);
+    try {
+      const { data: userRes, error: userErr } = await supabase.auth.getUser();
+      if (userErr) throw userErr;
+      const u = userRes.user;
+      if (!u) { setLoading(false); return; }
+      setUserId(u.id);
 
-    const [{ data: w }, { data: ords }, { data: inv }] = await Promise.all([
-      supabase.from("wallets").select("balance").eq("user_id", u.id).maybeSingle(),
-      supabase
-        .from("orders")
-        .select(
-          "id,order_code,status,water_type,size_l,total,distance_km,delivery_charge,wallet_discount,payment_method,address_text,delivery_date,delivery_slot,created_at"
-        )
-        .eq("customer_id", u.id)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("invoices")
-        .select("id,order_id,invoice_no,issued_at,pdf_url")
-        .order("issued_at", { ascending: false }),
-    ]);
+      const [walletRes, ordersRes, invRes] = await Promise.all([
+        supabase.from("wallets").select("balance").eq("user_id", u.id).maybeSingle(),
+        supabase
+          .from("orders")
+          .select(
+            "id,order_code,status,water_type,size_l,total,distance_km,delivery_charge,wallet_discount,payment_method,address_text,delivery_date,delivery_slot,created_at"
+          )
+          .eq("customer_id", u.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("invoices")
+          .select("id,order_id,invoice_no,issued_at,pdf_url")
+          .order("issued_at", { ascending: false }),
+      ]);
 
-    setWalletBalance(Number(w?.balance ?? 0));
-    const ordersList = (ords ?? []) as OrderRow[];
-    setOrders(ordersList);
-    setInvoices((inv ?? []) as InvoiceRow[]);
+      setWalletBalance(Number(walletRes.data?.balance ?? 0));
+      const ordersList = (ordersRes.data ?? []) as OrderRow[];
+      setOrders(ordersList);
+      setInvoices((invRes.data ?? []) as InvoiceRow[]);
 
-    if (ordersList.length) {
-      if (!selectedOrder) setSelectedOrder(ordersList[0].id);
-      const ids = ordersList.map((o) => o.id);
-      const { data: tracks } = await supabase
-        .from("order_tracking")
-        .select("id,order_id,status,note,created_at")
-        .in("order_id", ids)
-        .order("created_at", { ascending: true });
-      const grouped: Record<string, TrackingRow[]> = {};
-      (tracks ?? []).forEach((t) => {
-        const row = t as TrackingRow;
-        grouped[row.order_id] = grouped[row.order_id] ?? [];
-        grouped[row.order_id].push(row);
-      });
-      setTrackingByOrder(grouped);
+      if (ordersList.length) {
+        if (!selectedOrder) setSelectedOrder(ordersList[0].id);
+        const ids = ordersList.map((o) => o.id);
+        const { data: tracks } = await supabase
+          .from("order_tracking")
+          .select("id,order_id,status,note,created_at")
+          .in("order_id", ids)
+          .order("created_at", { ascending: true });
+        const grouped: Record<string, TrackingRow[]> = {};
+        (tracks ?? []).forEach((t) => {
+          const row = t as TrackingRow;
+          grouped[row.order_id] = grouped[row.order_id] ?? [];
+          grouped[row.order_id].push(row);
+        });
+        setTrackingByOrder(grouped);
+      }
+    } catch (err) {
+      console.error("dashboard load", err);
+      setLoadError(err instanceof Error ? err.message : "Could not load your dashboard");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -160,8 +169,23 @@ function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
+        <div className="h-1.5 w-48 overflow-hidden rounded-full bg-secondary">
+          <div className="h-full w-1/3 animate-[loading_1.2s_ease-in-out_infinite] bg-primary" />
+        </div>
+        <p className="text-xs text-muted-foreground">Loading your dashboard…</p>
+        <style>{`@keyframes loading{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}`}</style>
+      </div>
+    );
+  }
+  if (loadError) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center px-4">
+        <p className="font-display text-lg font-bold text-foreground">Couldn't load your data</p>
+        <p className="max-w-md text-sm text-muted-foreground">{loadError}</p>
+        <button onClick={load} className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+          <RefreshCw className="h-4 w-4"/> Retry
+        </button>
       </div>
     );
   }
@@ -183,6 +207,12 @@ function DashboardPage() {
               <p className="text-[10px] uppercase tracking-wider text-white/70">Wallet</p>
               <p className="font-display text-xl font-bold">₹{walletBalance.toFixed(0)}</p>
             </div>
+            <Link
+              to="/wallet/recharge"
+              className="inline-flex items-center gap-2 rounded-full bg-white/15 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/25"
+            >
+              <Wallet className="h-4 w-4" /> Recharge
+            </Link>
             <Link
               to="/book"
               className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-card hover:scale-[1.03]"
