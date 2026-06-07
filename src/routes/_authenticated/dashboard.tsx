@@ -208,6 +208,12 @@ function DashboardPage() {
               <p className="font-display text-xl font-bold">₹{walletBalance.toFixed(0)}</p>
             </div>
             <Link
+              to="/wallet/recharge"
+              className="inline-flex items-center gap-2 rounded-full bg-white/15 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur hover:bg-white/25"
+            >
+              <Wallet className="h-4 w-4" /> Recharge
+            </Link>
+            <Link
               to="/book"
               className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-card hover:scale-[1.03]"
             >
