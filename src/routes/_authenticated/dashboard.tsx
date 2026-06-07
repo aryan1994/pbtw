@@ -169,8 +169,23 @@ function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
+        <div className="h-1.5 w-48 overflow-hidden rounded-full bg-secondary">
+          <div className="h-full w-1/3 animate-[loading_1.2s_ease-in-out_infinite] bg-primary" />
+        </div>
+        <p className="text-xs text-muted-foreground">Loading your dashboard…</p>
+        <style>{`@keyframes loading{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}`}</style>
+      </div>
+    );
+  }
+  if (loadError) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center px-4">
+        <p className="font-display text-lg font-bold text-foreground">Couldn't load your data</p>
+        <p className="max-w-md text-sm text-muted-foreground">{loadError}</p>
+        <button onClick={load} className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+          <RefreshCw className="h-4 w-4"/> Retry
+        </button>
       </div>
     );
   }
