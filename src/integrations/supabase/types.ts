@@ -559,6 +559,48 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_recharge_requests: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          screenshot_url: string
+          status: Database["public"]["Enums"]["recharge_status"]
+          updated_at: string
+          upi_ref: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_url: string
+          status?: Database["public"]["Enums"]["recharge_status"]
+          updated_at?: string
+          upi_ref?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          screenshot_url?: string
+          status?: Database["public"]["Enums"]["recharge_status"]
+          updated_at?: string
+          upi_ref?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       wallet_transactions: {
         Row: {
           amount: number
@@ -627,12 +669,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_wallet_recharge: {
+        Args: { _note?: string; _request_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      reject_wallet_recharge: {
+        Args: { _note?: string; _request_id: string }
+        Returns: undefined
       }
     }
     Enums: {
@@ -648,6 +698,7 @@ export type Database = {
         | "delivered"
         | "cancelled"
       payment_method: "cod" | "online" | "wallet"
+      recharge_status: "pending" | "approved" | "rejected"
       vehicle_type: "water_tanker" | "mini_tanker" | "large_tanker" | "other"
       wallet_txn_status: "pending" | "approved" | "rejected"
       wallet_txn_type: "deposit" | "debit" | "refund" | "bonus" | "referral"
@@ -792,6 +843,7 @@ export const Constants = {
         "cancelled",
       ],
       payment_method: ["cod", "online", "wallet"],
+      recharge_status: ["pending", "approved", "rejected"],
       vehicle_type: ["water_tanker", "mini_tanker", "large_tanker", "other"],
       wallet_txn_status: ["pending", "approved", "rejected"],
       wallet_txn_type: ["deposit", "debit", "refund", "bonus", "referral"],
