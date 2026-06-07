@@ -72,14 +72,14 @@ function AdminRechargesPage() {
   }
   async function approve(r: Req) {
     setBusyId(r.id);
-    const { error } = await supabase.rpc("approve_wallet_recharge", { _request_id: r.id, _note: null });
+    const { error } = await supabase.rpc("approve_wallet_recharge", { _request_id: r.id, _note: undefined });
     setBusyId(null);
     if (error) return toast.error(error.message);
     toast.success(`Credited ₹${r.amount}`);
     void load();
   }
   async function reject(r: Req) {
-    const note = window.prompt("Reason for rejection? (optional)") ?? null;
+    const note = window.prompt("Reason for rejection? (optional)") || undefined;
     setBusyId(r.id);
     const { error } = await supabase.rpc("reject_wallet_recharge", { _request_id: r.id, _note: note });
     setBusyId(null);
