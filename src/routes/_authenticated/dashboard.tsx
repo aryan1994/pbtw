@@ -68,6 +68,7 @@ type Tab = "orders" | "track" | "invoices" | "offers";
 function DashboardPage() {
   const [tab, setTab] = useState<Tab>("orders");
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [walletBalance, setWalletBalance] = useState(0);
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -76,49 +77,57 @@ function DashboardPage() {
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
   const load = async () => {
+    setLoadError(null);
     setLoading(true);
-    const { data: userRes } = await supabase.auth.getUser();
-    const u = userRes.user;
-    if (!u) return;
-    setUserId(u.id);
+    try {
+      const { data: userRes, error: userErr } = await supabase.auth.getUser();
+      if (userErr) throw userErr;
+      const u = userRes.user;
+      if (!u) { setLoading(false); return; }
+      setUserId(u.id);
 
-    const [{ data: w }, { data: ords }, { data: inv }] = await Promise.all([
-      supabase.from("wallets").select("balance").eq("user_id", u.id).maybeSingle(),
-      supabase
-        .from("orders")
-        .select(
-          "id,order_code,status,water_type,size_l,total,distance_km,delivery_charge,wallet_discount,payment_method,address_text,delivery_date,delivery_slot,created_at"
-        )
-        .eq("customer_id", u.id)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("invoices")
-        .select("id,order_id,invoice_no,issued_at,pdf_url")
-        .order("issued_at", { ascending: false }),
-    ]);
+      const [walletRes, ordersRes, invRes] = await Promise.all([
+        supabase.from("wallets").select("balance").eq("user_id", u.id).maybeSingle(),
+        supabase
+          .from("orders")
+          .select(
+            "id,order_code,status,water_type,size_l,total,distance_km,delivery_charge,wallet_discount,payment_method,address_text,delivery_date,delivery_slot,created_at"
+          )
+          .eq("customer_id", u.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("invoices")
+          .select("id,order_id,invoice_no,issued_at,pdf_url")
+          .order("issued_at", { ascending: false }),
+      ]);
 
-    setWalletBalance(Number(w?.balance ?? 0));
-    const ordersList = (ords ?? []) as OrderRow[];
-    setOrders(ordersList);
-    setInvoices((inv ?? []) as InvoiceRow[]);
+      setWalletBalance(Number(walletRes.data?.balance ?? 0));
+      const ordersList = (ordersRes.data ?? []) as OrderRow[];
+      setOrders(ordersList);
+      setInvoices((invRes.data ?? []) as InvoiceRow[]);
 
-    if (ordersList.length) {
-      if (!selectedOrder) setSelectedOrder(ordersList[0].id);
-      const ids = ordersList.map((o) => o.id);
-      const { data: tracks } = await supabase
-        .from("order_tracking")
-        .select("id,order_id,status,note,created_at")
-        .in("order_id", ids)
-        .order("created_at", { ascending: true });
-      const grouped: Record<string, TrackingRow[]> = {};
-      (tracks ?? []).forEach((t) => {
-        const row = t as TrackingRow;
-        grouped[row.order_id] = grouped[row.order_id] ?? [];
-        grouped[row.order_id].push(row);
-      });
-      setTrackingByOrder(grouped);
+      if (ordersList.length) {
+        if (!selectedOrder) setSelectedOrder(ordersList[0].id);
+        const ids = ordersList.map((o) => o.id);
+        const { data: tracks } = await supabase
+          .from("order_tracking")
+          .select("id,order_id,status,note,created_at")
+          .in("order_id", ids)
+          .order("created_at", { ascending: true });
+        const grouped: Record<string, TrackingRow[]> = {};
+        (tracks ?? []).forEach((t) => {
+          const row = t as TrackingRow;
+          grouped[row.order_id] = grouped[row.order_id] ?? [];
+          grouped[row.order_id].push(row);
+        });
+        setTrackingByOrder(grouped);
+      }
+    } catch (err) {
+      console.error("dashboard load", err);
+      setLoadError(err instanceof Error ? err.message : "Could not load your dashboard");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
