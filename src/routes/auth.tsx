@@ -30,17 +30,24 @@ function AuthPage() {
   const [terms, setTerms] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  // Redirect once auth state populates
+  // Redirect once auth state populates. Read from session (localStorage) to avoid
+  // a getUser() race that caused the /auth ↔ /profile loop.
   useEffect(() => {
-    const check = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) navigate({ to: "/profile", replace: true });
-    };
-    check();
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session?.user) navigate({ to: "/profile", replace: true });
+    let cancelled = false;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled && data.session?.user) {
+        navigate({ to: "/profile", replace: true });
+      }
     });
-    return () => sub.subscription.unsubscribe();
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && session?.user) {
+        navigate({ to: "/profile", replace: true });
+      }
+    });
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleEmail = async (e: React.FormEvent) => {
