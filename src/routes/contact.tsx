@@ -30,7 +30,7 @@ const CONTACTS = [
     icon: MessageCircle,
     label: "WhatsApp",
     value: COMPANY.phone,
-    href: `https://wa.me/${COMPANY.whatsapp}?text=${encodeURIComponent("I Need Your Service")}`,
+    href: `https://wa.me/${COMPANY.whatsapp}?text=${encodeURIComponent("Hello HydroxFlow Team, I would like to book a water tanker.")}`,
     accent: "bg-emerald-500",
   },
   {
