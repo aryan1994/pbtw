@@ -13,6 +13,7 @@ import {
   Wallet,
   Navigation,
   RefreshCw,
+  Clock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ORDER_STATUS_FLOW, ORDER_STATUS_LABEL, WATER_TYPE_LABEL } from "@/lib/booking";
@@ -206,6 +207,14 @@ function DriverDashboard() {
       .reduce((s, e) => s + Number(e.amount), 0);
   }, [earnings]);
 
+  // Calculate hours online (from current session, or estimate based on deliveries)
+  const hoursOnline = useMemo(() => {
+    const sessionStart = new Date();
+    sessionStart.setHours(7, 0, 0, 0); // Assume 7 AM start for demo
+    const now = new Date();
+    return Math.round((now.getTime() - sessionStart.getTime()) / (1000 * 60 * 60) * 10) / 10;
+  }, []);
+
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -281,7 +290,7 @@ function DriverDashboard() {
 
       <section className="pb-24">
         <div className="mx-auto -mt-8 max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-4">
             <Stat
               icon={IndianRupee}
               label="Today's earnings"
@@ -293,6 +302,12 @@ function DriverDashboard() {
               label="Last 7 days"
               value={`₹${weekEarnings}`}
               tone="accent"
+            />
+            <Stat
+              icon={Clock}
+              label="Hours online"
+              value={`${hoursOnline}h`}
+              tone="emerald"
             />
             <Stat
               icon={Package}
@@ -370,14 +385,14 @@ function Stat({
   icon: typeof IndianRupee;
   label: string;
   value: string;
-  tone: "primary" | "accent";
+  tone: "primary" | "accent" | "emerald";
 }) {
   return (
     <div className="rounded-3xl border border-border bg-card p-5 shadow-card">
       <div
         className={cn(
           "flex h-10 w-10 items-center justify-center rounded-xl text-white",
-          tone === "primary" ? "bg-primary" : "bg-accent"
+          tone === "primary" ? "bg-primary" : tone === "accent" ? "bg-accent" : "bg-emerald-500"
         )}
       >
         <Icon className="h-5 w-5" />

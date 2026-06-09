@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as DriverAuthRouteImport } from './routes/driver-auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as BecomeDriverRouteImport } from './routes/become-driver'
@@ -18,13 +19,16 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiSendEmailRouteImport } from './routes/api/send-email'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedDriverRouteImport } from './routes/_authenticated/driver'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedWalletRechargeRouteImport } from './routes/_authenticated/wallet.recharge'
 import { Route as AuthenticatedAdminRechargesRouteImport } from './routes/_authenticated/admin.recharges'
+import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
 import { Route as AuthenticatedAdminDriversRouteImport } from './routes/_authenticated/admin.drivers'
+import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authenticated/admin.coupons'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -34,6 +38,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DriverAuthRoute = DriverAuthRouteImport.update({
+  id: '/driver-auth',
+  path: '/driver-auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -70,6 +79,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSendEmailRoute = ApiSendEmailRouteImport.update({
+  id: '/api/send-email',
+  path: '/api/send-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -102,10 +116,22 @@ const AuthenticatedAdminRechargesRoute =
     path: '/admin/recharges',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminOrdersRoute =
+  AuthenticatedAdminOrdersRouteImport.update({
+    id: '/admin/orders',
+    path: '/admin/orders',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminDriversRoute =
   AuthenticatedAdminDriversRouteImport.update({
     id: '/admin/drivers',
     path: '/admin/drivers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminCouponsRoute =
+  AuthenticatedAdminCouponsRouteImport.update({
+    id: '/admin/coupons',
+    path: '/admin/coupons',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -116,13 +142,17 @@ export interface FileRoutesByFullPath {
   '/become-driver': typeof BecomeDriverRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/driver-auth': typeof DriverAuthRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/send-email': typeof ApiSendEmailRoute
+  '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/recharges': typeof AuthenticatedAdminRechargesRoute
   '/wallet/recharge': typeof AuthenticatedWalletRechargeRoute
 }
@@ -133,13 +163,17 @@ export interface FileRoutesByTo {
   '/become-driver': typeof BecomeDriverRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/driver-auth': typeof DriverAuthRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/driver': typeof AuthenticatedDriverRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/send-email': typeof ApiSendEmailRoute
+  '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/recharges': typeof AuthenticatedAdminRechargesRoute
   '/wallet/recharge': typeof AuthenticatedWalletRechargeRoute
 }
@@ -152,13 +186,17 @@ export interface FileRoutesById {
   '/become-driver': typeof BecomeDriverRoute
   '/book': typeof BookRoute
   '/contact': typeof ContactRoute
+  '/driver-auth': typeof DriverAuthRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/driver': typeof AuthenticatedDriverRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/send-email': typeof ApiSendEmailRoute
+  '/_authenticated/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/_authenticated/admin/drivers': typeof AuthenticatedAdminDriversRoute
+  '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/_authenticated/admin/recharges': typeof AuthenticatedAdminRechargesRoute
   '/_authenticated/wallet/recharge': typeof AuthenticatedWalletRechargeRoute
 }
@@ -171,13 +209,17 @@ export interface FileRouteTypes {
     | '/become-driver'
     | '/book'
     | '/contact'
+    | '/driver-auth'
     | '/pricing'
     | '/sitemap.xml'
     | '/dashboard'
     | '/driver'
     | '/profile'
     | '/api/chat'
+    | '/api/send-email'
+    | '/admin/coupons'
     | '/admin/drivers'
+    | '/admin/orders'
     | '/admin/recharges'
     | '/wallet/recharge'
   fileRoutesByTo: FileRoutesByTo
@@ -188,13 +230,17 @@ export interface FileRouteTypes {
     | '/become-driver'
     | '/book'
     | '/contact'
+    | '/driver-auth'
     | '/pricing'
     | '/sitemap.xml'
     | '/dashboard'
     | '/driver'
     | '/profile'
     | '/api/chat'
+    | '/api/send-email'
+    | '/admin/coupons'
     | '/admin/drivers'
+    | '/admin/orders'
     | '/admin/recharges'
     | '/wallet/recharge'
   id:
@@ -206,13 +252,17 @@ export interface FileRouteTypes {
     | '/become-driver'
     | '/book'
     | '/contact'
+    | '/driver-auth'
     | '/pricing'
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
     | '/_authenticated/driver'
     | '/_authenticated/profile'
     | '/api/chat'
+    | '/api/send-email'
+    | '/_authenticated/admin/coupons'
     | '/_authenticated/admin/drivers'
+    | '/_authenticated/admin/orders'
     | '/_authenticated/admin/recharges'
     | '/_authenticated/wallet/recharge'
   fileRoutesById: FileRoutesById
@@ -225,9 +275,11 @@ export interface RootRouteChildren {
   BecomeDriverRoute: typeof BecomeDriverRoute
   BookRoute: typeof BookRoute
   ContactRoute: typeof ContactRoute
+  DriverAuthRoute: typeof DriverAuthRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiSendEmailRoute: typeof ApiSendEmailRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -244,6 +296,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/driver-auth': {
+      id: '/driver-auth'
+      path: '/driver-auth'
+      fullPath: '/driver-auth'
+      preLoaderRoute: typeof DriverAuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -295,6 +354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/send-email': {
+      id: '/api/send-email'
+      path: '/api/send-email'
+      fullPath: '/api/send-email'
+      preLoaderRoute: typeof ApiSendEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -337,11 +403,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRechargesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/orders': {
+      id: '/_authenticated/admin/orders'
+      path: '/admin/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/drivers': {
       id: '/_authenticated/admin/drivers'
       path: '/admin/drivers'
       fullPath: '/admin/drivers'
       preLoaderRoute: typeof AuthenticatedAdminDriversRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/coupons': {
+      id: '/_authenticated/admin/coupons'
+      path: '/admin/coupons'
+      fullPath: '/admin/coupons'
+      preLoaderRoute: typeof AuthenticatedAdminCouponsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -351,7 +431,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDriverRoute: typeof AuthenticatedDriverRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedAdminCouponsRoute: typeof AuthenticatedAdminCouponsRoute
   AuthenticatedAdminDriversRoute: typeof AuthenticatedAdminDriversRoute
+  AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
   AuthenticatedAdminRechargesRoute: typeof AuthenticatedAdminRechargesRoute
   AuthenticatedWalletRechargeRoute: typeof AuthenticatedWalletRechargeRoute
 }
@@ -360,7 +442,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDriverRoute: AuthenticatedDriverRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedAdminCouponsRoute: AuthenticatedAdminCouponsRoute,
   AuthenticatedAdminDriversRoute: AuthenticatedAdminDriversRoute,
+  AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
   AuthenticatedAdminRechargesRoute: AuthenticatedAdminRechargesRoute,
   AuthenticatedWalletRechargeRoute: AuthenticatedWalletRechargeRoute,
 }
@@ -376,10 +460,22 @@ const rootRouteChildren: RootRouteChildren = {
   BecomeDriverRoute: BecomeDriverRoute,
   BookRoute: BookRoute,
   ContactRoute: ContactRoute,
+  DriverAuthRoute: DriverAuthRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiSendEmailRoute: ApiSendEmailRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
