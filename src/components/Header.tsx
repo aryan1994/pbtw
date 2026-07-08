@@ -95,7 +95,7 @@ export function Header() {
               }}
               activeOptions={{ exact: item.to === "/" }}
             >
-              {item.label}
+              {t(item.key)}
             </Link>
           ))}
         </nav>
