@@ -24,6 +24,8 @@ import {
   DELIVERY_RATE_PER_KM,
 } from "@/lib/booking";
 import { cn } from "@/lib/utils";
+import { generateInvoicePdf } from "@/lib/invoice-pdf";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "My Dashboard | PBTW" }] }),
