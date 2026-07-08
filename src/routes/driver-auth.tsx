@@ -90,6 +90,7 @@ function DriverAuthPage() {
             dl_url: "",
             rc_url: "",
             status: "pending",
+            terms_accepted_at: new Date().toISOString(),
           });
         }
         toast.success("Application submitted! Check your email for next steps.");
