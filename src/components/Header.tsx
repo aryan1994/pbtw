@@ -159,12 +159,15 @@ export function Header() {
                 {t(item.key)}
               </Link>
             ))}
+            <div className="px-2 pt-2">
+              <LanguageToggle className="text-foreground" />
+            </div>
             <Link
               to="/book"
               onClick={() => setOpen(false)}
               className="mt-2 block rounded-lg bg-primary px-4 py-3 text-center text-base font-semibold text-primary-foreground"
             >
-              Book Now
+              {t("nav.bookNow")}
             </Link>
           </div>
         </div>
