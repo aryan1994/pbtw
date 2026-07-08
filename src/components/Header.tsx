@@ -21,13 +21,30 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
+    const checkAdmin = async (uid: string | undefined) => {
+      if (!uid) return setIsAdmin(false);
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", uid)
+        .eq("role", "admin")
+        .maybeSingle();
+      setIsAdmin(!!data);
+    };
+    supabase.auth.getSession().then(({ data }) => {
+      setAuthed(!!data.session);
+      void checkAdmin(data.session?.user.id);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setAuthed(!!s);
+      void checkAdmin(s?.user.id);
+    });
     return () => {
       window.removeEventListener("scroll", onScroll);
       sub.subscription.unsubscribe();
