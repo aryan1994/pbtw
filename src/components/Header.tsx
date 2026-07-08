@@ -109,7 +109,7 @@ export function Header() {
                 scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
             >
-              <LayoutDashboard className="h-4 w-4" /> Dashboard
+              <LayoutDashboard className="h-4 w-4" /> {t("nav.dashboard")}
             </Link>
           ) : (
             <Link
@@ -119,14 +119,15 @@ export function Header() {
                 scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
             >
-              Login
+              {t("nav.login")}
             </Link>
           )}
+          <LanguageToggle className={scrolled ? "text-foreground" : "text-white"} />
           <Link
             to="/book"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:bg-navy-deep hover:scale-[1.03] hover:shadow-elegant"
           >
-            Book Now
+            {t("nav.bookNow")}
           </Link>
         </div>
 
