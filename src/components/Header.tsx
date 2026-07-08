@@ -4,14 +4,15 @@ import { Menu, X, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/pbtw-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n, LanguageToggle } from "@/lib/i18n";
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/book", label: "Book Tanker" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/become-driver", label: "Drive with us" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/", key: "nav.home" },
+  { to: "/book", key: "nav.book" },
+  { to: "/pricing", key: "nav.pricing" },
+  { to: "/become-driver", key: "nav.drive" },
+  { to: "/about", key: "nav.about" },
+  { to: "/contact", key: "nav.contact" },
 ] as const;
 
 
