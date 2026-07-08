@@ -17,6 +17,7 @@ const NAV = [
 
 
 export function Header() {
+  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
