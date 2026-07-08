@@ -164,8 +164,7 @@ function AdminOrdersPage() {
           !q ||
           o.order_code.toLowerCase().includes(q) ||
           o.customer_name.toLowerCase().includes(q) ||
-          o.customer_phone.includes(q) ||
-          o.customer_email.toLowerCase().includes(q)
+          o.customer_phone.includes(q)
       );
   }, [orders, query, selectedTab]);
 
