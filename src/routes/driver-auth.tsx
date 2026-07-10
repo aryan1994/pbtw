@@ -81,7 +81,7 @@ function DriverAuthPage() {
             mobile: phone.trim(),
             email: email,
             vehicle_number: vehicleNo.trim(),
-            vehicle_type: "tanker",
+            vehicle_type: "water_tanker",
             address: "",
             aadhaar_number: "",
             pan_number: "",
