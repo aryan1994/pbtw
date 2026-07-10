@@ -1,17 +1,18 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X, LayoutDashboard, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/pbtw-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { useT } from "@/lib/i18n";
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/book", label: "Book Tanker" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/become-driver", label: "Drive with us" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/", key: "nav.home" as const },
+  { to: "/book", key: "nav.book" as const },
+  { to: "/pricing", key: "nav.pricing" as const },
+  { to: "/become-driver", key: "nav.drive" as const },
+  { to: "/about", key: "nav.about" as const },
+  { to: "/contact", key: "nav.contact" as const },
 ] as const;
 
 
