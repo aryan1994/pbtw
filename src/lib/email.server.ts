@@ -1,6 +1,18 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend(): Resend {
+  if (_resend) return _resend;
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error("RESEND_API_KEY not configured");
+  _resend = new Resend(key);
+  return _resend;
+}
+const resend = new Proxy({} as Resend, {
+  get(_t, prop) {
+    return Reflect.get(getResend() as unknown as object, prop);
+  },
+});
 
 const FROM_EMAIL = "noreply@pbtw.in"; // Update this to your domain
 const ADMIN_EMAIL = "skylooperr@gmail.com";
