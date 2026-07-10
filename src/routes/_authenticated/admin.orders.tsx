@@ -98,8 +98,8 @@ function AdminOrdersPage() {
         .eq("status", "available"),
     ]);
 
-    setOrders((ordersRes.data ?? []) as Order[]);
-    setDrivers((driversRes.data ?? []) as Driver[]);
+    setOrders((ordersRes.data ?? []) as unknown as Order[]);
+    setDrivers((driversRes.data ?? []) as unknown as Driver[]);
     setLoading(false);
 
     // Check for new orders (created in last 5 minutes)
