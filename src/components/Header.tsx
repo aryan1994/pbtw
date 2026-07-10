@@ -169,12 +169,19 @@ export function Header() {
                 {t(item.key)}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={() => setLang(lang === "en" ? "hi" : "en")}
+              className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
+            >
+              <Languages className="h-4 w-4" /> {t("lang.toggle")}
+            </button>
             <Link
               to="/book"
               onClick={() => setOpen(false)}
               className="mt-2 block rounded-lg bg-primary px-4 py-3 text-center text-base font-semibold text-primary-foreground"
             >
-              Book Now
+              {t("cta.book")}
             </Link>
           </div>
         </div>
