@@ -101,6 +101,17 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <button
+            type="button"
+            onClick={() => setLang(lang === "en" ? "hi" : "en")}
+            aria-label="Toggle language"
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold transition-colors",
+              scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
+            )}
+          >
+            <Languages className="h-4 w-4" /> {t("lang.toggle")}
+          </button>
           {authed ? (
             <Link
               to="/dashboard"
@@ -119,14 +130,14 @@ export function Header() {
                 scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
             >
-              Login
+              {t("cta.login")}
             </Link>
           )}
           <Link
             to="/book"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:bg-navy-deep hover:scale-[1.03] hover:shadow-elegant"
           >
-            Book Now
+            {t("cta.book")}
           </Link>
         </div>
 
