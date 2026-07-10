@@ -20,6 +20,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const { t, lang, setLang } = useT();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -94,7 +95,7 @@ export function Header() {
               }}
               activeOptions={{ exact: item.to === "/" }}
             >
-              {item.label}
+              {t(item.key)}
             </Link>
           ))}
         </nav>
@@ -108,7 +109,7 @@ export function Header() {
                 scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
             >
-              <LayoutDashboard className="h-4 w-4" /> Dashboard
+              <LayoutDashboard className="h-4 w-4" /> {t("cta.dashboard")}
             </Link>
           ) : (
             <Link
@@ -154,7 +155,7 @@ export function Header() {
                 activeProps={{ className: "block rounded-lg px-4 py-3 text-base font-semibold bg-secondary text-primary" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
-                {item.label}
+                {t(item.key)}
               </Link>
             ))}
             <Link
