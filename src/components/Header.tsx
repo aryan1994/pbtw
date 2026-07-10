@@ -1,17 +1,18 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X, LayoutDashboard, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/pbtw-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { useT } from "@/lib/i18n";
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/book", label: "Book Tanker" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/become-driver", label: "Drive with us" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/", key: "nav.home" as const },
+  { to: "/book", key: "nav.book" as const },
+  { to: "/pricing", key: "nav.pricing" as const },
+  { to: "/become-driver", key: "nav.drive" as const },
+  { to: "/about", key: "nav.about" as const },
+  { to: "/contact", key: "nav.contact" as const },
 ] as const;
 
 
@@ -19,6 +20,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const { t, lang, setLang } = useT();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -93,12 +95,23 @@ export function Header() {
               }}
               activeOptions={{ exact: item.to === "/" }}
             >
-              {item.label}
+              {t(item.key)}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <button
+            type="button"
+            onClick={() => setLang(lang === "en" ? "hi" : "en")}
+            aria-label="Toggle language"
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-bold transition-colors",
+              scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
+            )}
+          >
+            <Languages className="h-4 w-4" /> {t("lang.toggle")}
+          </button>
           {authed ? (
             <Link
               to="/dashboard"
@@ -107,7 +120,7 @@ export function Header() {
                 scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
             >
-              <LayoutDashboard className="h-4 w-4" /> Dashboard
+              <LayoutDashboard className="h-4 w-4" /> {t("cta.dashboard")}
             </Link>
           ) : (
             <Link
@@ -117,14 +130,14 @@ export function Header() {
                 scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
             >
-              Login
+              {t("cta.login")}
             </Link>
           )}
           <Link
             to="/book"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:bg-navy-deep hover:scale-[1.03] hover:shadow-elegant"
           >
-            Book Now
+            {t("cta.book")}
           </Link>
         </div>
 
@@ -153,15 +166,22 @@ export function Header() {
                 activeProps={{ className: "block rounded-lg px-4 py-3 text-base font-semibold bg-secondary text-primary" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
-                {item.label}
+                {t(item.key)}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={() => setLang(lang === "en" ? "hi" : "en")}
+              className="mt-2 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-border px-4 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
+            >
+              <Languages className="h-4 w-4" /> {t("lang.toggle")}
+            </button>
             <Link
               to="/book"
               onClick={() => setOpen(false)}
               className="mt-2 block rounded-lg bg-primary px-4 py-3 text-center text-base font-semibold text-primary-foreground"
             >
-              Book Now
+              {t("cta.book")}
             </Link>
           </div>
         </div>
