@@ -14,9 +14,11 @@ import {
   AlertCircle,
   RefreshCw,
   Eye,
+  Download,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { WATER_TYPE_LABEL, ORDER_STATUS_LABEL } from "@/lib/booking";
+import { downloadInvoice } from "@/lib/invoice-pdf";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/orders")({
