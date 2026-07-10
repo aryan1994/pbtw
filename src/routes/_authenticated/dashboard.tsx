@@ -24,8 +24,6 @@ import {
   DELIVERY_RATE_PER_KM,
 } from "@/lib/booking";
 import { cn } from "@/lib/utils";
-import { generateInvoicePdf } from "@/lib/invoice-pdf";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "My Dashboard | PBTW" }] }),
@@ -463,72 +461,45 @@ function StatusTimeline({
 }
 
 function InvoicesTab({ orders, invoices }: { orders: OrderRow[]; invoices: InvoiceRow[] }) {
-  // Provide an invoice for every order (fallback to a generated number if none exists).
-  const invoiceByOrder = new Map(invoices.map((i) => [i.order_id, i]));
-
-  const handleDownload = async (order: OrderRow) => {
-    try {
-      const { data, error } = await supabase
-        .from("orders")
-        .select(
-          "order_code,customer_name,customer_phone,address_text,water_type,size_l,base_price,distance_km,delivery_charge,wallet_discount,gst,total,payment_method,delivery_date,delivery_slot,created_at",
-        )
-        .eq("id", order.id)
-        .single();
-      if (error || !data) throw error ?? new Error("Order not found");
-      const inv = invoiceByOrder.get(order.id);
-      const invoiceNo = inv?.invoice_no ?? `INV-${order.order_code}`;
-      generateInvoicePdf(
-        {
-          ...data,
-          base_price: Number(data.base_price),
-          distance_km: data.distance_km ? Number(data.distance_km) : null,
-          delivery_charge: Number(data.delivery_charge),
-          wallet_discount: Number(data.wallet_discount),
-          gst: Number(data.gst),
-          total: Number(data.total),
-        },
-        { invoice_no: invoiceNo, issued_at: inv?.issued_at },
-      );
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not generate invoice");
-    }
-  };
-
-  if (!orders.length) {
+  const orderById = new Map(orders.map((o) => [o.id, o]));
+  if (!invoices.length) {
     return (
       <EmptyState
         title="No invoices yet"
-        subtitle="Every order gets an invoice — book a tanker to get started."
+        subtitle="Invoices are generated automatically once your order is delivered."
       />
     );
   }
-
   return (
     <div className="grid gap-3">
-      {orders.map((o) => {
-        const inv = invoiceByOrder.get(o.id);
+      {invoices.map((inv) => {
+        const o = orderById.get(inv.order_id);
         return (
           <div
-            key={o.id}
+            key={inv.id}
             className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
           >
             <div>
-              <p className="font-display text-sm font-bold text-foreground">
-                {inv?.invoice_no ?? `INV-${o.order_code}`}
-              </p>
+              <p className="font-display text-sm font-bold text-foreground">{inv.invoice_no}</p>
               <p className="text-xs text-muted-foreground">
-                {new Date(inv?.issued_at ?? o.created_at).toLocaleDateString()} · Order {o.order_code}
+                {new Date(inv.issued_at).toLocaleDateString()}
+                {o && ` · Order ${o.order_code}`}
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <p className="font-display text-lg font-bold text-primary">₹{o.total}</p>
-              <button
-                onClick={() => handleDownload(o)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-navy-deep"
-              >
-                <FileText className="h-3.5 w-3.5" /> Download PDF
-              </button>
+              {o && <p className="font-display text-lg font-bold text-primary">₹{o.total}</p>}
+              {inv.pdf_url ? (
+                <a
+                  href={inv.pdf_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+                >
+                  <FileText className="h-3.5 w-3.5" /> Download
+                </a>
+              ) : (
+                <span className="text-xs text-muted-foreground">PDF generating…</span>
+              )}
             </div>
           </div>
         );

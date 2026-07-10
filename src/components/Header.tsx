@@ -4,47 +4,28 @@ import { Menu, X, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoAsset from "@/assets/pbtw-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
-import { useI18n, LanguageToggle } from "@/lib/i18n";
 
 const NAV = [
-  { to: "/", key: "nav.home" },
-  { to: "/book", key: "nav.book" },
-  { to: "/pricing", key: "nav.pricing" },
-  { to: "/become-driver", key: "nav.drive" },
-  { to: "/about", key: "nav.about" },
-  { to: "/contact", key: "nav.contact" },
+  { to: "/", label: "Home" },
+  { to: "/book", label: "Book Tanker" },
+  { to: "/pricing", label: "Pricing" },
+  { to: "/become-driver", label: "Drive with us" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
 
 export function Header() {
-  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    const checkAdmin = async (uid: string | undefined) => {
-      if (!uid) return setIsAdmin(false);
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", uid)
-        .eq("role", "admin")
-        .maybeSingle();
-      setIsAdmin(!!data);
-    };
-    supabase.auth.getSession().then(({ data }) => {
-      setAuthed(!!data.session);
-      void checkAdmin(data.session?.user.id);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setAuthed(!!s);
-      void checkAdmin(s?.user.id);
-    });
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setAuthed(!!s));
     return () => {
       window.removeEventListener("scroll", onScroll);
       sub.subscription.unsubscribe();
@@ -112,37 +93,22 @@ export function Header() {
               }}
               activeOptions={{ exact: item.to === "/" }}
             >
-              {t(item.key)}
+              {item.label}
             </Link>
           ))}
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
           {authed ? (
-            <>
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  className={cn(
-                    "rounded-full px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors",
-                    scrolled
-                      ? "bg-primary/10 text-primary hover:bg-primary/20"
-                      : "bg-white/15 text-white hover:bg-white/25"
-                  )}
-                >
-                  {t("nav.admin")}
-                </Link>
+            <Link
+              to="/dashboard"
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
-              <Link
-                to="/dashboard"
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-                  scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
-                )}
-              >
-                <LayoutDashboard className="h-4 w-4" /> {t("nav.dashboard")}
-              </Link>
-            </>
+            >
+              <LayoutDashboard className="h-4 w-4" /> Dashboard
+            </Link>
           ) : (
             <Link
               to="/auth"
@@ -151,15 +117,14 @@ export function Header() {
                 scrolled ? "text-foreground hover:bg-secondary" : "text-white hover:bg-white/10"
               )}
             >
-              {t("nav.login")}
+              Login
             </Link>
           )}
-          <LanguageToggle className={scrolled ? "text-foreground" : "text-white"} />
           <Link
             to="/book"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition-all hover:bg-navy-deep hover:scale-[1.03] hover:shadow-elegant"
           >
-            {t("nav.bookNow")}
+            Book Now
           </Link>
         </div>
 
@@ -188,18 +153,15 @@ export function Header() {
                 activeProps={{ className: "block rounded-lg px-4 py-3 text-base font-semibold bg-secondary text-primary" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
-                {t(item.key)}
+                {item.label}
               </Link>
             ))}
-            <div className="px-2 pt-2">
-              <LanguageToggle className="text-foreground" />
-            </div>
             <Link
               to="/book"
               onClick={() => setOpen(false)}
               className="mt-2 block rounded-lg bg-primary px-4 py-3 text-center text-base font-semibold text-primary-foreground"
             >
-              {t("nav.bookNow")}
+              Book Now
             </Link>
           </div>
         </div>

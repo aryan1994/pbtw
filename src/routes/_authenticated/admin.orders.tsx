@@ -28,6 +28,7 @@ type Order = {
   id: string;
   order_code: string;
   customer_name: string;
+  customer_email: string;
   customer_phone: string;
   driver_id: string | null;
   status: string;
@@ -94,7 +95,7 @@ function AdminOrdersPage() {
       supabase
         .from("drivers")
         .select("*")
-        .eq("status", "available"),
+        .eq("status", "active"),
     ]);
 
     setOrders((ordersRes.data ?? []) as Order[]);
@@ -164,7 +165,8 @@ function AdminOrdersPage() {
           !q ||
           o.order_code.toLowerCase().includes(q) ||
           o.customer_name.toLowerCase().includes(q) ||
-          o.customer_phone.includes(q)
+          o.customer_phone.includes(q) ||
+          o.customer_email.toLowerCase().includes(q)
       );
   }, [orders, query, selectedTab]);
 
