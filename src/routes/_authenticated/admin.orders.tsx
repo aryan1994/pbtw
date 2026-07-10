@@ -372,19 +372,45 @@ function AdminOrdersPage() {
                   </div>
                 )}
 
-                {order.status === "pending" && !order.driver_id && (
-                  <div className="mt-4 flex gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {order.status === "pending" && !order.driver_id && (
                     <button
                       onClick={() => {
                         setSelectedOrder(order);
                         setShowAssignModal(true);
                       }}
-                      className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold hover:bg-primary/90"
+                      className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold hover:bg-primary/90"
                     >
                       <Eye className="h-4 w-4" /> Assign Driver
                     </button>
-                  </div>
-                )}
+                  )}
+                  <button
+                    onClick={() => {
+                      try {
+                        downloadInvoice({
+                          order_code: order.order_code,
+                          customer_name: order.customer_name,
+                          customer_phone: order.customer_phone,
+                          customer_email: order.customer_email,
+                          address_text: order.address_text,
+                          water_type: order.water_type,
+                          size_l: order.size_l,
+                          total: order.total,
+                          delivery_date: order.delivery_date,
+                          delivery_slot: order.delivery_slot,
+                          created_at: order.created_at,
+                          status: order.status,
+                        });
+                        toast.success("Invoice downloaded");
+                      } catch {
+                        toast.error("Failed to generate invoice");
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold hover:bg-secondary"
+                  >
+                    <Download className="h-4 w-4" /> Invoice PDF
+                  </button>
+                </div>
               </div>
             ))}
           </div>
