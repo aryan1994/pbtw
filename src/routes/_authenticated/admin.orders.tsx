@@ -103,15 +103,15 @@ function AdminOrdersPage() {
     setLoading(false);
 
     // Check for new orders (created in last 5 minutes)
-    const recentOrders = (ordersRes.data ?? [])
-      .filter((o: Order) => {
+    const recentOrders = ((ordersRes.data ?? []) as unknown as Order[])
+      .filter((o) => {
         const createdTime = new Date(o.created_at).getTime();
         const now = new Date().getTime();
         return now - createdTime < 5 * 60 * 1000 && o.status === "pending";
       });
     
     if (recentOrders.length > 0) {
-      setNewOrderNotifs(recentOrders.map((o: Order) => ({
+      setNewOrderNotifs(recentOrders.map((o) => ({
         id: o.id,
         order_code: o.order_code,
         customer_name: o.customer_name,
