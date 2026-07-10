@@ -95,7 +95,7 @@ function AdminOrdersPage() {
       supabase
         .from("drivers")
         .select("*")
-        .eq("status", "active"),
+        .eq("status", "available"),
     ]);
 
     setOrders((ordersRes.data ?? []) as Order[]);
